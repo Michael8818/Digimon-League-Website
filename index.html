@@ -4,64 +4,90 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Digimon League</title>
-  <meta name="description" content="Standings, events and news for the Digimon League.">
+  <meta name="description" content="Your Digimon League trainer card: gym badges, Elite Four progress and championship invitation.">
   <link rel="stylesheet" href="css/styles.css">
-  <script src="js/main.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" defer></script>
+  <script src="js/config.js" defer></script>
+  <script src="js/common.js" defer></script>
+  <script src="js/app.js" defer></script>
 </head>
 <body>
   <header class="site-header">
     <div class="container header-inner">
-      <a class="logo" href="#top">Digimon League</a>
-      <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
-      <nav id="site-nav" class="site-nav">
-        <a href="#standings">Standings</a>
-        <a href="#events">Events</a>
-        <a href="#about">About</a>
+      <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"></span>Digimon League</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="index.html" aria-current="page">My card</a>
+        <a href="leaderboard.html">Leaderboard</a>
       </nav>
     </div>
   </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="container">
-        <h1>Digimon League</h1>
-        <p>Season standings, upcoming events and league news, all in one place.</p>
-        <a class="button" href="#events">See upcoming events</a>
-      </div>
+  <main class="container page">
+    <!-- First visit: ask for a name -->
+    <section id="name-view" class="panel name-panel" hidden>
+      <h1>Welcome, trainer</h1>
+      <p class="muted">Enter your trainer name to see your badges. Use the same name every time so leaders can find you.</p>
+      <form id="name-form" class="name-form" autocomplete="off">
+        <label for="name-input" class="visually-hidden">Trainer name</label>
+        <input id="name-input" name="name" type="text" maxlength="30" placeholder="Your trainer name" required>
+        <button type="submit" class="button">Continue</button>
+      </form>
     </section>
 
-    <section id="standings" class="section">
-      <div class="container">
-        <h2>Standings</h2>
-        <div class="table-wrap">
-          <table class="standings">
-            <thead>
-              <tr><th>#</th><th>Player</th><th>Wins</th><th>Losses</th><th>Points</th></tr>
-            </thead>
-            <tbody id="standings-body"></tbody>
-          </table>
+    <!-- Trainer card -->
+    <section id="card-view" hidden>
+      <div class="panel trainer-head">
+        <div>
+          <p class="eyebrow">Trainer</p>
+          <h1 id="trainer-name" class="trainer-name"></h1>
+          <p id="trainer-summary" class="muted"></p>
+        </div>
+        <div class="trainer-actions">
+          <button id="refresh-btn" class="button ghost" type="button">Refresh</button>
+          <button id="switch-btn" class="link-button" type="button">Not you?</button>
         </div>
       </div>
-    </section>
 
-    <section id="events" class="section alt">
-      <div class="container">
-        <h2>Upcoming events</h2>
-        <ul id="events-list" class="cards"></ul>
+      <p id="status" class="status" role="status"></p>
+
+      <div class="panel">
+        <div class="section-head">
+          <h2>Gym badges</h2>
+          <span id="gym-count" class="pill"></span>
+        </div>
+        <ul id="gym-grid" class="badge-grid gyms"></ul>
       </div>
-    </section>
 
-    <section id="about" class="section">
-      <div class="container">
-        <h2>About the league</h2>
-        <p>Add details about your league here: format, schedule, how to join and who to contact.</p>
+      <div class="panel">
+        <div class="section-head">
+          <h2>Elite Four</h2>
+          <span id="e4-count" class="pill"></span>
+        </div>
+        <p id="e4-hint" class="muted"></p>
+        <ol id="e4-grid" class="badge-grid elite4"></ol>
+      </div>
+
+      <div id="champ-panel" class="panel champ">
+        <div id="champ-art" class="champ-art"></div>
+        <div>
+          <h2 id="champ-title"></h2>
+          <p id="champ-text" class="muted"></p>
+        </div>
+      </div>
+
+      <div class="panel qr-panel">
+        <div id="qr-box" class="qr-box" aria-label="Your challenger QR code"></div>
+        <div>
+          <h2>Your challenger QR</h2>
+          <p class="muted">After you win a battle, show this to the leader. They scan it to record your badge. It can take about a minute to appear here.</p>
+        </div>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p>&copy; <span id="year"></span> Digimon League</p>
+      <p>&copy; <span id="year"></span> Digimon League · <a href="leader.html">Leader tools</a></p>
     </div>
   </footer>
 </body>

@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Leader Tools · Digimon League</title>
+  <meta name="description" content="Record wins for Digimon League challengers.">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js" defer></script>
+  <script src="js/config.js" defer></script>
+  <script src="js/common.js" defer></script>
+  <script src="js/leader.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"></span>Digimon League</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="index.html">My card</a>
+        <a href="leaderboard.html">Leaderboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container page">
+    <!-- Not set up on this device yet -->
+    <section id="setup-view" hidden>
+      <div class="panel stack">
+        <div>
+          <h1 style="margin:0 0 6px">Leader tools</h1>
+          <p class="muted" style="margin:0">This page is for gym leaders and the Elite Four. Open the leader link the organizer sent you, or paste the details below.</p>
+        </div>
+        <p id="challenger-note" class="notice warn" hidden>
+          Scanned a trainer's QR code? Only leaders can record wins. Challengers can see their badges on <a href="index.html">their card</a>.
+        </p>
+        <form id="setup-form" class="stack" autocomplete="off">
+          <div class="field">
+            <label for="token-input">League access token</label>
+            <input id="token-input" type="password" required placeholder="github_pat_…">
+          </div>
+          <div class="field">
+            <label for="role-select">I am</label>
+            <select id="role-select"></select>
+          </div>
+          <p id="setup-error" class="notice error" hidden></p>
+          <button id="setup-btn" type="submit" class="button">Save on this device</button>
+        </form>
+      </div>
+
+      <details class="panel">
+        <summary>Organizer: how to create the access token</summary>
+        <ol class="steps">
+          <li>On GitHub, open <strong>Settings → Developer settings → Personal access tokens → Fine-grained tokens</strong> and choose <strong>Generate new token</strong>.</li>
+          <li>Name it something like "League leaders" and pick an expiration date.</li>
+          <li>Under <strong>Repository access</strong>, choose <strong>Only select repositories</strong> and pick <strong>Digimon-League-Website</strong>.</li>
+          <li>Under <strong>Permissions → Repository permissions</strong>, set <strong>Contents</strong> to <strong>Read and write</strong>. Leave everything else as is.</li>
+          <li>Generate the token, paste it above, and choose <strong>Organizer</strong>. You'll then get a private link for each leader.</li>
+        </ol>
+      </details>
+    </section>
+
+    <!-- Set up: record wins -->
+    <section id="main-view" hidden>
+      <div class="panel">
+        <div class="section-head" style="margin-bottom:0">
+          <div class="role-badge">
+            <div id="role-art"></div>
+            <div>
+              <p class="eyebrow">Recording as</p>
+              <h1 id="role-name" style="margin:2px 0 0;font-size:1.4rem"></h1>
+            </div>
+          </div>
+          <button id="signout-btn" class="link-button" type="button">Sign out</button>
+        </div>
+        <div id="organizer-pick" class="field" style="margin-top:14px" hidden>
+          <label for="leader-select">Record a win against</label>
+          <select id="leader-select"></select>
+        </div>
+      </div>
+
+      <div class="panel stack">
+        <div class="field">
+          <label for="challenger-input">Challenger</label>
+          <div class="row">
+            <input id="challenger-input" type="text" list="player-list" maxlength="30" placeholder="Scan their QR code or type their name" autocomplete="off">
+            <button id="scan-btn" class="button" type="button">Scan QR</button>
+          </div>
+          <datalist id="player-list"></datalist>
+        </div>
+
+        <div id="challenger-box" class="challenger-box" hidden>
+          <div class="section-head" style="margin:0">
+            <h3 id="challenger-name"></h3>
+            <span id="challenger-tag" class="pill"></span>
+          </div>
+          <div id="challenger-badges" class="mini-badges"></div>
+          <p id="challenger-summary" class="muted" style="margin:0"></p>
+          <p id="challenge-check" class="notice warn" hidden></p>
+          <button id="record-btn" class="button block" type="button"></button>
+          <button id="remove-btn" class="button danger block" type="button" hidden></button>
+        </div>
+
+        <p id="result" class="notice" role="status" hidden></p>
+        <p id="load-status" class="status"></p>
+      </div>
+
+      <details id="links-panel" class="panel" hidden>
+        <summary>Leader links</summary>
+        <p class="notice warn" style="margin-top:0">Each link contains the league access token. Send it privately to that leader only (for example in a direct message), never post it publicly.</p>
+        <ul id="links-list" class="links-list"></ul>
+      </details>
+    </section>
+  </main>
+
+  <div id="scanner" class="scanner" hidden>
+    <video id="scanner-video" playsinline muted></video>
+    <p>Point the camera at the challenger's QR code</p>
+    <button id="scan-cancel" class="button ghost" type="button" style="color:#fff">Cancel</button>
+  </div>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span id="year"></span> Digimon League</p>
+    </div>
+  </footer>
+</body>
+</html>

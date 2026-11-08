@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Leaderboard · Digimon League</title>
+  <meta name="description" content="Every Digimon League trainer and the badges they've earned.">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/config.js" defer></script>
+  <script src="js/common.js" defer></script>
+  <script src="js/leaderboard.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"></span>Digimon League</a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="index.html">My card</a>
+        <a href="leaderboard.html" aria-current="page">Leaderboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container page">
+    <div class="panel">
+      <div class="section-head">
+        <div>
+          <h1 style="margin:0 0 4px">Leaderboard</h1>
+          <p id="board-summary" class="muted" style="margin:0"></p>
+        </div>
+        <button id="refresh-btn" class="button ghost small" type="button">Refresh</button>
+      </div>
+      <p id="status" class="status" role="status"></p>
+      <ol id="board" class="board"></ol>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span id="year"></span> Digimon League · <a href="leader.html">Leader tools</a></p>
+    </div>
+  </footer>
+</body>
+</html>
