@@ -16,7 +16,7 @@
     <div class="container header-inner">
       <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"></span>Digimon League</a>
       <nav class="site-nav" aria-label="Main">
-        <a href="index.html" aria-current="page">My card</a>
+        <a href="index.html" aria-current="page">Dashboard</a>
         <a href="leaderboard.html">Leaderboard</a>
       </nav>
     </div>
@@ -43,7 +43,7 @@
           <p id="trainer-summary" class="muted"></p>
         </div>
         <div class="trainer-actions">
-          <button id="refresh-btn" class="button ghost" type="button">Refresh</button>
+          <button id="code-btn" class="button" type="button">Challenge Code</button>
           <button id="switch-btn" class="link-button" type="button">Not you?</button>
         </div>
       </div>
@@ -75,15 +75,19 @@
         </div>
       </div>
 
-      <div class="panel qr-panel">
-        <div id="qr-box" class="qr-box" aria-label="Your challenger QR code"></div>
-        <div>
-          <h2>Your challenger QR</h2>
-          <p class="muted">After you win a battle, show this to the leader. They scan it to record your badge. It can take about a minute to appear here.</p>
-        </div>
-      </div>
     </section>
   </main>
+
+  <!-- Challenge Code: the QR code leaders scan to record a win -->
+  <dialog id="code-dialog" class="code-dialog" aria-labelledby="code-title">
+    <h2 id="code-title">Challenge Code</h2>
+    <p id="code-name" class="code-name"></p>
+    <div id="qr-box" class="qr-box"></div>
+    <p class="muted code-help">After you win a battle, show this to the leader. They scan it to record your badge, and it appears on your dashboard in about a minute.</p>
+    <form method="dialog">
+      <button class="button block" type="submit">Done</button>
+    </form>
+  </dialog>
 
   <footer class="site-footer">
     <div class="container">

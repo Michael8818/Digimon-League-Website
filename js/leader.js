@@ -357,7 +357,7 @@ async function save(kind) {
     } else if (kind === "record" && leader.type === "gym" && progress.allGyms) {
       message += " That's all 6 badges, so they can now challenge the Elite Four.";
     }
-    message += " It'll show on their card in about a minute.";
+    message += " It'll show on their dashboard in about a minute.";
     showResult("ok", message);
   } catch (err) {
     showResult("error", escapeHtml(err.message));

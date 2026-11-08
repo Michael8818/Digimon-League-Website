@@ -8,7 +8,9 @@ const els = {
   trainerName: document.getElementById("trainer-name"),
   summary: document.getElementById("trainer-summary"),
   status: document.getElementById("status"),
-  refreshBtn: document.getElementById("refresh-btn"),
+  codeBtn: document.getElementById("code-btn"),
+  codeDialog: document.getElementById("code-dialog"),
+  codeName: document.getElementById("code-name"),
   switchBtn: document.getElementById("switch-btn"),
   gymGrid: document.getElementById("gym-grid"),
   gymCount: document.getElementById("gym-count"),
@@ -38,16 +40,18 @@ function showCard() {
   refresh();
 }
 
+let loading = false;
 async function refresh() {
-  els.refreshBtn.disabled = true;
-  els.status.textContent = "Loading latest results…";
+  if (loading || !store.get(STORAGE_KEYS.trainer)) return;
+  loading = true;
+  if (!leagueData) els.status.textContent = "Loading latest results…";
   try {
     leagueData = await loadLeagueData();
     render();
   } catch (err) {
-    els.status.textContent = `${err.message} Check your connection and tap Refresh.`;
+    els.status.textContent = `${err.message} Check your connection; the page will try again shortly.`;
   } finally {
-    els.refreshBtn.disabled = false;
+    loading = false;
   }
 }
 
@@ -131,6 +135,7 @@ function renderQr(name) {
       if (qr.isDark(r, c)) path += `M${c + margin} ${r + margin}h1v1h-1z`;
     }
   }
+  els.codeName.textContent = name;
   els.qrBox.innerHTML = `
     <svg viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges" role="img" aria-label="QR code for ${escapeHtml(name)}">
       <rect width="${size}" height="${size}" fill="#fff"/>
@@ -153,12 +158,30 @@ els.switchBtn.addEventListener("click", () => {
   showNameForm();
 });
 
-els.refreshBtn.addEventListener("click", refresh);
-
-// Refresh when the trainer comes back to the tab (e.g. right after a leader records a win).
-document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible" && store.get(STORAGE_KEYS.trainer)) refresh();
+// Challenge Code pop-up
+els.codeBtn.addEventListener("click", () => {
+  if (typeof els.codeDialog.showModal === "function") els.codeDialog.showModal();
+  else els.codeDialog.setAttribute("open", "");
 });
+
+// Tapping outside the code closes it.
+els.codeDialog.addEventListener("click", (e) => {
+  if (e.target !== els.codeDialog) return;
+  const r = els.codeDialog.getBoundingClientRect();
+  const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+  if (!inside) els.codeDialog.close();
+});
+
+// Check for new badges when the code is closed (the leader has usually just scanned it).
+els.codeDialog.addEventListener("close", refresh);
+
+// Keep the dashboard current: when the trainer comes back to the tab, and every minute while open.
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") refresh();
+});
+setInterval(() => {
+  if (document.visibilityState === "visible" && !els.codeDialog.open) refresh();
+}, 60_000);
 
 if (store.get(STORAGE_KEYS.trainer)) showCard();
 else showNameForm();

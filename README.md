@@ -2,7 +2,7 @@
 
 Badge tracker for the Digimon League, hosted on GitHub Pages.
 
-- **My card** (`index.html`): asks for your trainer name on first visit and remembers it. Shows your 6 gym badges, your Elite Four progress, your Championship Invitation, and a QR code for leaders to scan.
+- **Dashboard** (`index.html`): asks for your trainer name on first visit and remembers it. Shows your 6 gym badges, your Elite Four progress and your Championship Invitation. The **Challenge Code** button shows a QR code for leaders to scan.
 - **Leaderboard** (`leaderboard.html`): every trainer and their badges.
 - **Leader tools** (`leader.html`): leaders scan a challenger's QR code (or type the name) and record the win.
 
@@ -18,10 +18,10 @@ All results live in [`data/players.json`](data/players.json). There is no databa
 
 GitHub Pages can only serve files, so the leader page saves wins through the GitHub API:
 
-1. After a battle, the challenger opens **My card** and shows their QR code.
+1. After a battle, the challenger opens their **Dashboard**, taps **Challenge Code**, and shows the QR code.
 2. The leader scans it, either with the **Scan QR** button on the leader page or with the phone's camera app. The leader page opens with the challenger's name filled in.
 3. The leader taps **Record win**. The page updates `data/players.json` in this repo (one commit per win).
-4. GitHub Pages republishes, and the win shows on the card and leaderboard in about a minute.
+4. GitHub Pages republishes, and the win shows on the dashboard and leaderboard in about a minute.
 
 ## Organizer setup (one time)
 
