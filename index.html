@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Digimon League</title>
+  <meta name="description" content="Standings, events and news for the Digimon League.">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="#top">Digimon League</a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav id="site-nav" class="site-nav">
+        <a href="#standings">Standings</a>
+        <a href="#events">Events</a>
+        <a href="#about">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container">
+        <h1>Digimon League</h1>
+        <p>Season standings, upcoming events and league news, all in one place.</p>
+        <a class="button" href="#events">See upcoming events</a>
+      </div>
+    </section>
+
+    <section id="standings" class="section">
+      <div class="container">
+        <h2>Standings</h2>
+        <div class="table-wrap">
+          <table class="standings">
+            <thead>
+              <tr><th>#</th><th>Player</th><th>Wins</th><th>Losses</th><th>Points</th></tr>
+            </thead>
+            <tbody id="standings-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="events" class="section alt">
+      <div class="container">
+        <h2>Upcoming events</h2>
+        <ul id="events-list" class="cards"></ul>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <div class="container">
+        <h2>About the league</h2>
+        <p>Add details about your league here: format, schedule, how to join and who to contact.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span id="year"></span> Digimon League</p>
+    </div>
+  </footer>
+</body>
+</html>
