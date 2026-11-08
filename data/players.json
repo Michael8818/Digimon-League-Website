@@ -1,11 +1,3 @@
 {
-  "players": [
-    {
-      "name": "Test Trainer",
-      "gyms": {
-        "red": "2026-11-08T02:29:18.724Z"
-      },
-      "elite4": {}
-    }
-  ]
+  "players": []
 }
