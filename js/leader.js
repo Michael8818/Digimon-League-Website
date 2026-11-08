@@ -35,6 +35,9 @@ const els = {
   loadStatus: $("load-status"),
   linksPanel: $("links-panel"),
   linksList: $("links-list"),
+  confirmDialog: $("confirm-dialog"),
+  confirmText: $("confirm-text"),
+  confirmOk: $("confirm-ok"),
   scanner: $("scanner"),
   video: $("scanner-video"),
   scanCancel: $("scan-cancel"),
@@ -149,6 +152,23 @@ async function updateRemote(change, message) {
   throw new Error("Couldn't save because the data kept changing. Please try again.");
 }
 
+// ---------- In-page confirmation ----------
+// Browser pop-ups (confirm/prompt) are silently blocked in some in-app browsers, so we use our own.
+function askConfirm(message, okLabel = "Confirm", danger = false) {
+  const dialog = els.confirmDialog;
+  if (typeof dialog.showModal !== "function") return Promise.resolve(true);
+
+  return new Promise((resolve) => {
+    els.confirmText.textContent = message;
+    els.confirmOk.textContent = okLabel;
+    els.confirmOk.className = danger ? "button danger" : "button";
+    dialog.returnValue = "";
+    dialog.addEventListener("close", () => resolve(dialog.returnValue === "ok"), { once: true });
+    dialog.showModal();
+    els.confirmOk.focus();
+  });
+}
+
 // ---------- Setup ----------
 function fillRoleOptions(select, includeOrganizer) {
   const options = [];
@@ -191,8 +211,8 @@ els.setupForm.addEventListener("submit", async (e) => {
   }
 });
 
-els.signoutBtn.addEventListener("click", () => {
-  if (!confirm("Remove the leader access token from this device?")) return;
+els.signoutBtn.addEventListener("click", async () => {
+  if (!(await askConfirm("Remove the leader access token from this device?", "Sign out", true))) return;
   store.remove(STORAGE_KEYS.token);
   store.remove(STORAGE_KEYS.role);
   showSetup(false);
@@ -295,7 +315,7 @@ async function save(kind) {
   const question = kind === "record"
     ? `Record that ${typed} beat ${leader.name}?`
     : `Remove ${typed}'s win against ${leader.name}?`;
-  if (!confirm(question)) return;
+  if (!(await askConfirm(question, kind === "record" ? "Record win" : "Remove win", kind !== "record"))) return;
 
   busy = true;
   renderChallenger();
@@ -368,10 +388,18 @@ function renderLinks() {
       try {
         await navigator.clipboard.writeText(url);
         btn.textContent = "Copied!";
+        setTimeout(() => { btn.textContent = "Copy link"; }, 2000);
       } catch {
-        prompt("Copy this link:", url);
+        // Clipboard blocked: show the link in a box so it can be copied by hand.
+        const input = document.createElement("input");
+        input.type = "text";
+        input.readOnly = true;
+        input.className = "link-fallback";
+        input.value = url;
+        btn.replaceWith(input);
+        input.focus();
+        input.select();
       }
-      setTimeout(() => { btn.textContent = "Copy link"; }, 2000);
     });
   });
 }

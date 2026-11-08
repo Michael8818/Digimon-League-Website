@@ -113,6 +113,17 @@
     </section>
   </main>
 
+  <!-- In-page confirmation (browser pop-ups are blocked in some in-app browsers) -->
+  <dialog id="confirm-dialog" class="confirm-dialog">
+    <form method="dialog">
+      <p id="confirm-text" class="confirm-text"></p>
+      <div class="confirm-actions">
+        <button value="cancel" class="button ghost" type="submit">Cancel</button>
+        <button id="confirm-ok" value="ok" class="button" type="submit">Confirm</button>
+      </div>
+    </form>
+  </dialog>
+
   <div id="scanner" class="scanner" hidden>
     <video id="scanner-video" playsinline muted></video>
     <p>Point the camera at the challenger's QR code</p>

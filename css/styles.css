@@ -495,6 +495,27 @@ label { font-weight: 600; font-size: 0.92rem; }
 
 .scanner p { color: #fff; margin: 0; text-align: center; }
 
+.confirm-dialog {
+  width: min(420px, calc(100vw - 32px));
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.confirm-dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
+.confirm-text { margin: 0; font-size: 1.05rem; font-weight: 600; overflow-wrap: anywhere; }
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.link-fallback { width: 100%; font-size: 0.8rem; }
+
 .links-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 
 .links-list li {
