@@ -319,6 +319,10 @@ async function save(kind) {
       } else {
         if (!player || !player[field]?.[leaderId]) throw new Error("That win isn't on record.");
         delete player[field][leaderId];
+        // A trainer with no wins left is taken off the leaderboard entirely.
+        if (!Object.keys(player.gyms || {}).length && !Object.keys(player.elite4 || {}).length) {
+          data.players.splice(data.players.indexOf(player), 1);
+        }
       }
       savedName = player.name;
     }, `${verb} win: ${typed} vs ${leader.name}`);
