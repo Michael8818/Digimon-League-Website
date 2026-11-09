@@ -340,14 +340,62 @@ function elite4Svg(member, status) {
     </svg>`;
 }
 
+// Championship Invitation: winged gold crest with a crown, a central diamond and
+// six small gems in the gym colors (one for each badge that led here).
 function trophySvg(earned) {
+  const t = earned ? tones("#e3a008") : LOCKED_TONES;
+  const id = `ch${++svgUid}`;
+  const mirror = (inner) => `<g>${inner}</g><g transform="translate(120 0) scale(-1 1)">${inner}</g>`;
+
+  const wings = mirror(`
+    <path d="M40 44 Q16 18 2 12 Q16 34 37 54 Z" fill="${t.light}" stroke="${t.deep}" stroke-width="1.2" stroke-linejoin="round"/>
+    <path d="M39 50 Q14 32 0 31 Q16 46 36 60 Z" fill="url(#${id}-metal)" stroke="${t.deep}" stroke-width="1.2" stroke-linejoin="round"/>
+    <path d="M38 56 Q16 48 3 50 Q18 60 35 65 Z" fill="${t.base}" stroke="${t.deep}" stroke-width="1.2" stroke-linejoin="round"/>
+    <path d="M37 62 Q20 62 9 68 Q23 71 35 69 Z" fill="${t.dark}" stroke="${t.deep}" stroke-width="1.2" stroke-linejoin="round"/>`);
+
+  // Six gym gems in an arc around the diamond.
+  const gems = LEAGUE.gyms.map((g, i) => {
+    const a = ((180 + i * 36) * Math.PI) / 180;
+    const x = (60 + 21 * Math.cos(a)).toFixed(1);
+    const y = (57 + 21 * Math.sin(a)).toFixed(1);
+    const fill = earned ? g.color : t.light;
+    return `<circle cx="${x}" cy="${y}" r="3.8" fill="${fill}" stroke="${t.deep}" stroke-width="1"/>
+            <circle cx="${(x - 1.2).toFixed(1)}" cy="${(y - 1.2).toFixed(1)}" r="1.2" fill="#fff" opacity="${earned ? 0.75 : 0.3}"/>`;
+  }).join("");
+
+  const center = earned
+    ? `<polygon points="60,43 71,57 60,72 49,57" fill="url(#${id}-gem)" stroke="${t.deep}" stroke-width="1.2" stroke-linejoin="round"/>
+       <polygon points="60,43 49,57 60,57" fill="#fff" opacity="0.7"/>
+       <polygon points="60,57 71,57 60,72" fill="#0b3a66" opacity="0.25"/>
+       <line x1="53" y1="58" x2="61" y2="47" stroke="#fff" stroke-width="1.4" opacity="0.8"/>`
+    : lockGlyph(60, 57);
+
   return `
-    <svg class="badge-art ${earned ? "earned" : "is-locked"}" viewBox="0 0 64 64" aria-hidden="true">
-      <path d="M18 10h28v14a14 14 0 0 1-28 0z" fill="${earned ? "var(--gold)" : "var(--locked)"}" stroke="var(--badge-stroke)" stroke-width="2"/>
-      <path d="M18 14H10v4a10 10 0 0 0 9 10M46 14h8v4a10 10 0 0 1-9 10" fill="none" stroke="${earned ? "var(--gold)" : "var(--locked)"}" stroke-width="3"/>
-      <rect x="28" y="37" width="8" height="9" fill="${earned ? "var(--gold)" : "var(--locked)"}"/>
-      <rect x="20" y="46" width="24" height="7" rx="2" fill="${earned ? "var(--gold)" : "var(--locked)"}" stroke="var(--badge-stroke)" stroke-width="2"/>
-      ${earned ? `<path d="M32 15l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" fill="#fff" opacity=".9"/>` : ""}
+    <svg class="badge-art ${earned ? "earned" : "is-locked"}" viewBox="0 0 120 120" aria-hidden="true">
+      <defs>
+        <linearGradient id="${id}-metal" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="${t.hi}"/><stop offset="0.5" stop-color="${t.base}"/><stop offset="1" stop-color="${t.dark}"/>
+        </linearGradient>
+        <linearGradient id="${id}-plate" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${t.dark}"/><stop offset="1" stop-color="${t.deep}"/>
+        </linearGradient>
+        <linearGradient id="${id}-gem" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="#bfe6ff"/><stop offset="1" stop-color="#5fb4f5"/>
+        </linearGradient>
+      </defs>
+      ${wings}
+      <!-- crown -->
+      <path d="M43 26 L46 6 L54 17 L60 2 L66 17 L74 6 L77 26 Z" fill="url(#${id}-metal)" stroke="${t.deep}" stroke-width="1.4" stroke-linejoin="round"/>
+      <circle cx="46" cy="7" r="2.4" fill="${earned ? "#e5484d" : t.light}" stroke="${t.deep}" stroke-width="0.8"/>
+      <circle cx="60" cy="3.5" r="2.6" fill="${earned ? "#3b82f6" : t.light}" stroke="${t.deep}" stroke-width="0.8"/>
+      <circle cx="74" cy="7" r="2.4" fill="${earned ? "#22a55b" : t.light}" stroke="${t.deep}" stroke-width="0.8"/>
+      <!-- crest -->
+      <path d="M60 16 L86 28 L94 56 L60 110 L26 56 L34 28 Z" fill="url(#${id}-metal)" stroke="${t.deep}" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M60 16 L86 28 L94 56 L60 110 Z" fill="${t.deep}" opacity="0.25"/>
+      <path d="M60 28 L78 37 L84 57 L60 96 L36 57 L42 37 Z" fill="url(#${id}-plate)" stroke="${t.deep}" stroke-width="1.2" stroke-linejoin="round"/>
+      <path d="M60 28 L42 37 L36 57 L60 96 Z" fill="#fff" opacity="0.1"/>
+      ${gems}
+      ${center}
     </svg>`;
 }
 

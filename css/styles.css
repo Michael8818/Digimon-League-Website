@@ -378,8 +378,8 @@ button.badge:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
 
 .champ h2 { margin-bottom: 4px; }
 .champ p { margin: 0; }
-.champ-art { width: 72px; flex-shrink: 0; }
-.champ-art .badge-art { max-width: 72px; }
+.champ-art { width: 96px; flex-shrink: 0; }
+.champ-art .badge-art { max-width: 96px; }
 
 .champ.earned {
   border-color: var(--gold);
