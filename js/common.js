@@ -46,9 +46,19 @@ function formatDate(iso) {
 }
 
 // ---------- Data ----------
+const isLocalHost = ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname);
+
+// The newest version of players.json in the gist. The changing query string skips the cache,
+// so new wins show up right away. (On localhost a mock API can stand in for GitHub.)
+function gistRawUrl() {
+  const mock = isLocalHost && store.get(STORAGE_KEYS.apiBase);
+  const base = mock ? `${mock}/gist-raw` : "https://gist.githubusercontent.com";
+  const { owner, id, file } = LEAGUE.gist;
+  return `${base}/${owner}/${id}/raw/${encodeURIComponent(file)}?v=${Date.now()}`;
+}
+
 async function loadLeagueData() {
-  // The query string skips GitHub Pages' cache so new wins show up quickly.
-  const res = await fetch(`data/players.json?v=${Date.now()}`, { cache: "no-store" });
+  const res = await fetch(gistRawUrl(), { cache: "no-store" });
   if (!res.ok) throw new Error(`Couldn't load player data (${res.status}).`);
   return normalizeData(await res.json());
 }

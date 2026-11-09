@@ -46,7 +46,7 @@ async function refresh() {
   statusEl.textContent = "Loading…";
   try {
     renderBoard(await loadLeagueData());
-    statusEl.textContent = `Updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}. New wins can take about a minute to appear.`;
+    statusEl.textContent = `Updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}.`;
   } catch (err) {
     statusEl.textContent = `${err.message} Check your connection and tap Refresh.`;
   } finally {

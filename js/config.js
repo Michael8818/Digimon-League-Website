@@ -1,14 +1,14 @@
 // League configuration. Rename leaders and badges here; everything else reads from this file.
-// Gym and Elite 4 ids are stored in data/players.json, so don't change an id once wins are recorded.
+// Gym and Elite 4 ids are stored in players.json, so don't change an id once wins are recorded.
 const LEAGUE = {
   title: "Digimon League",
 
-  // Where players.json lives on GitHub. The leader page saves wins here.
-  repo: {
+  // Where players.json lives: a GitHub gist, so recording wins doesn't commit to this repo.
+  // The id is the long code in the gist's address: gist.github.com/<owner>/<id>
+  gist: {
     owner: "Michael8818",
-    name: "Digimon-League-Website",
-    branch: "main",
-    dataPath: "data/players.json",
+    id: "91d4810deef98b7758a6e7d3aa245ae9",
+    file: "players.json",
   },
 
   // The 6 gyms. Any order works; this is the order they're shown in.

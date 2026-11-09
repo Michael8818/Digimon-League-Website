@@ -1,7 +1,7 @@
-// Leader tools: scan a challenger's QR code and save the win to data/players.json on GitHub.
+// Leader tools: scan a challenger's QR code and save the win to players.json in a GitHub gist.
 //
 // GitHub Pages can't write files, so this page saves through the GitHub API using a
-// fine-grained token (Contents: read & write on this repo only). The token is never in the
+// fine-grained token (Account permission "Gists: Read and write"). The token is never in the
 // repo: it arrives in a private leader link (#role=...&token=...) and is kept on this device.
 
 const $ = (id) => document.getElementById(id);
@@ -44,7 +44,6 @@ const els = {
 };
 
 const ORGANIZER = "organizer";
-const isLocalHost = ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname);
 
 let leagueData = { players: [] };
 let busy = false;
@@ -84,20 +83,8 @@ function readHash() {
   return { challenger: challenger ? cleanName(challenger) : null };
 }
 
-// ---------- GitHub API ----------
-const contentsPath = () =>
-  `/repos/${LEAGUE.repo.owner}/${LEAGUE.repo.name}/contents/${LEAGUE.repo.dataPath}`;
-
-function decodeBase64(b64) {
-  const bin = atob(b64.replace(/\s/g, ""));
-  return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
-}
-
-function encodeBase64(text) {
-  let bin = "";
-  new TextEncoder().encode(text).forEach((b) => { bin += String.fromCharCode(b); });
-  return btoa(bin);
-}
+// ---------- GitHub API (gist) ----------
+const gistPath = (version) => `/gists/${LEAGUE.gist.id}${version ? `/${version}` : ""}`;
 
 async function githubRequest(path, options = {}, token = getToken()) {
   return fetch(`${apiBase()}${path}`, {
@@ -117,37 +104,58 @@ async function apiError(res) {
   try { detail = (await res.json()).message || ""; } catch { /* no body */ }
   if (res.status === 401) return new Error("The access token is invalid or has expired. Ask the organizer for a new leader link.");
   if (res.status === 403 || res.status === 404) {
-    return new Error("This token can't reach the league data. It needs Contents: Read and write on the Digimon-League-Website repo.");
+    return new Error("This token can't save league data. It needs the account permission Gists: Read and write. Ask the organizer for a new leader link.");
   }
   return new Error(`GitHub error ${res.status}${detail ? `: ${detail}` : ""}`);
 }
 
-async function fetchRemote(token) {
-  const res = await githubRequest(`${contentsPath()}?ref=${encodeURIComponent(LEAGUE.repo.branch)}`, {}, token);
+// Reads players.json from the gist (the newest version, or a specific older version).
+async function fetchRemote(token = getToken(), version = null) {
+  const res = await githubRequest(gistPath(version), {}, token);
   if (!res.ok) throw await apiError(res);
-  const file = await res.json();
-  return { sha: file.sha, data: normalizeData(JSON.parse(decodeBase64(file.content))) };
+  const gist = await res.json();
+  const file = gist.files?.[LEAGUE.gist.file];
+  if (!file) throw new Error(`The league gist has no file named ${LEAGUE.gist.file}.`);
+
+  let text = file.content;
+  if (file.truncated) text = await (await fetch(file.raw_url, { cache: "no-store" })).text();
+  return {
+    version: gist.history?.[0]?.version || null,
+    data: normalizeData(JSON.parse(text || "{}")),
+  };
 }
 
-// Loads the latest file, applies the change, and saves it. Retries if someone else saved at the same moment.
-async function updateRemote(change, message) {
-  for (let attempt = 1; attempt <= 4; attempt++) {
-    const { sha, data } = await fetchRemote();
-    change(data); // throws if the change isn't allowed against the latest data
+// Loads the latest data, applies the change, and saves it.
+// Gists can't refuse a save based on an outdated copy, so after saving we check the gist's
+// history: if someone else saved between our read and our write, our save replaced theirs.
+// We then rebuild on top of their version and save again, so neither win is lost.
+async function updateRemote(change) {
+  let { version: readVersion, data } = await fetchRemote();
 
-    const res = await githubRequest(contentsPath(), {
-      method: "PUT",
+  for (let attempt = 1; attempt <= 5; attempt++) {
+    try {
+      change(data); // throws if the change isn't allowed against this data
+    } catch (err) {
+      // First try: report it. On a retry their version may already include this win;
+      // still save their version so our earlier save doesn't wipe out their changes.
+      if (attempt === 1) throw err;
+    }
+
+    const res = await githubRequest(gistPath(), {
+      method: "PATCH",
       body: JSON.stringify({
-        message,
-        content: encodeBase64(`${JSON.stringify(data, null, 2)}\n`),
-        sha,
-        branch: LEAGUE.repo.branch,
+        files: { [LEAGUE.gist.file]: { content: `${JSON.stringify(data, null, 2)}\n` } },
       }),
     });
+    if (!res.ok) throw await apiError(res);
 
-    if (res.ok) return data;
-    if (res.status === 409 || res.status === 422) continue; // file changed underneath us: reload and retry
-    throw await apiError(res);
+    const history = (await res.json()).history || [];
+    const before = history[1]?.version;
+    if (!readVersion || !before || before === readVersion) return data; // nobody saved in between
+
+    // Someone saved in between: start again from their version (which our save replaced).
+    readVersion = history[0].version;
+    ({ data } = await fetchRemote(getToken(), before));
   }
   throw new Error("Couldn't save because the data kept changing. Please try again.");
 }
@@ -357,7 +365,7 @@ async function save(kind) {
     } else if (kind === "record" && leader.type === "gym" && progress.allGyms) {
       message += " That's all 6 badges, so they can now challenge the Elite Four.";
     }
-    message += " It'll show on their dashboard in about a minute.";
+    message += " It shows on their dashboard right away.";
     showResult("ok", message);
   } catch (err) {
     showResult("error", escapeHtml(err.message));
