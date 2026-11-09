@@ -10,9 +10,9 @@
 
   "gyms": {
     "red": {
-      "discord": "",
-      "discordId": "",
-      "rules": []
+      "discord": "wwm0nkey",
+      "discordId": "138172170965745665",
+      "rules": ["Best of 3", "Leader plays a red deck"]
     },
     "blue": {
       "discord": "",
@@ -61,10 +61,10 @@
       "decklistUrl": ""
     },
     "e4-4": {
-      "discord": "",
-      "discordId": "",
-      "deckName": "",
-      "decklistUrl": ""
+      "discord": "Kairu",
+      "discordId": "297846807063691265",
+      "deckName": "TS Slop",
+      "decklistUrl": "https://digimoncard.dev/p/DCGAYIAQlQxM4HHAUFEMSCBBQZCVDEzg8YZBAKCQlQxN4EGBEJUMTmBBBJCVDIwhkUEhwqHBcQCxQLCQlQyM4FGDUJUOCCBRRhFWDExgkUNRgRFWDEzhkcDRQFDBQNBRQY="
     }
   }
 }
