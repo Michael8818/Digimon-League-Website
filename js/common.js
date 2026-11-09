@@ -35,7 +35,7 @@ function normalizeName(name) {
 }
 
 function cleanName(name) {
-  return String(name ?? "").trim().replace(/\s+/g, " ").slice(0, 30);
+  return String(name ?? "").trim().replace(/\s+/g, " ").slice(0, 32);
 }
 
 function formatDate(iso) {

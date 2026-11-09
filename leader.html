@@ -33,7 +33,7 @@
           <p class="muted" style="margin:0">This page is for gym leaders and the Elite Four. Open the leader link the organizer sent you, or paste the details below.</p>
         </div>
         <p id="challenger-note" class="notice warn" hidden>
-          Scanned a trainer's QR code? Only leaders can record wins. Challengers can see their badges on <a href="index.html">their dashboard</a>.
+          Scanned a player's QR code? Only leaders can record wins. Challengers can see their badges on <a href="index.html">their dashboard</a>.
         </p>
         <form id="setup-form" class="stack" autocomplete="off">
           <div class="field">
@@ -84,7 +84,7 @@
         <div class="field">
           <label for="challenger-input">Challenger</label>
           <div class="row">
-            <input id="challenger-input" type="text" list="player-list" maxlength="30" placeholder="Scan their QR code or type their name" autocomplete="off">
+            <input id="challenger-input" type="text" list="player-list" maxlength="32" placeholder="Scan their QR code or type their Discord name" autocomplete="off">
             <button id="scan-btn" class="button" type="button">Scan QR</button>
           </div>
           <datalist id="player-list"></datalist>

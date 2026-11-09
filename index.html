@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Digimon League</title>
-  <meta name="description" content="Your Digimon League trainer card: gym badges, Elite Four progress and championship invitation.">
+  <meta name="description" content="Your Digimon League dashboard: gym badges, Elite Four progress and championship invitation.">
   <link rel="icon" type="image/png" href="assets/logo.png">
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" defer></script>
@@ -26,20 +26,20 @@
   <main class="container page">
     <!-- First visit: ask for a name -->
     <section id="name-view" class="panel name-panel" hidden>
-      <h1>Welcome, trainer</h1>
-      <p class="muted">Enter your trainer name to see your badges. Use the same name every time so leaders can find you.</p>
+      <h1>Welcome to the League!</h1>
+      <p class="muted">Enter your Discord name to see your badges. Use the same name every time so leaders can find you.</p>
       <form id="name-form" class="name-form" autocomplete="off">
-        <label for="name-input" class="visually-hidden">Trainer name</label>
-        <input id="name-input" name="name" type="text" maxlength="30" placeholder="Your trainer name" required>
+        <label for="name-input" class="visually-hidden">Discord name</label>
+        <input id="name-input" name="name" type="text" maxlength="32" placeholder="Your Discord name" required>
         <button type="submit" class="button">Continue</button>
       </form>
     </section>
 
-    <!-- Trainer card -->
+    <!-- Player card -->
     <section id="card-view" hidden>
       <div class="panel trainer-head">
         <div>
-          <p class="eyebrow">Trainer</p>
+          <p class="eyebrow">Discord</p>
           <h1 id="trainer-name" class="trainer-name"></h1>
           <p id="trainer-summary" class="muted"></p>
         </div>

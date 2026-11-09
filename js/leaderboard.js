@@ -1,4 +1,4 @@
-// Leaderboard page: every trainer in players.json, ranked by progress.
+// Leaderboard page: every player in players.json, ranked by progress.
 
 const boardEl = document.getElementById("board");
 const statusEl = document.getElementById("status");
@@ -13,11 +13,11 @@ function renderBoard(data) {
 
   const invited = rows.filter((r) => r.progress.invited).length;
   summaryEl.textContent = rows.length
-    ? `${rows.length} trainer${rows.length === 1 ? "" : "s"} · ${invited} championship invitation${invited === 1 ? "" : "s"}`
+    ? `${rows.length} player${rows.length === 1 ? "" : "s"} · ${invited} championship invitation${invited === 1 ? "" : "s"}`
     : "";
 
   if (!rows.length) {
-    boardEl.innerHTML = `<li class="empty">No trainers yet. Wins show up here once a leader records them.</li>`;
+    boardEl.innerHTML = `<li class="empty">No players yet. Wins show up here once a leader records them.</li>`;
     return;
   }
 

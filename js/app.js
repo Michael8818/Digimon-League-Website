@@ -1,4 +1,4 @@
-// Trainer card page: asks for a name once, then shows that trainer's progress.
+// Dashboard page: asks for a Discord name once, then shows that player's progress.
 
 const els = {
   nameView: document.getElementById("name-view"),
@@ -128,7 +128,7 @@ function render() {
   els.champArt.innerHTML = trophySvg(progress.invited);
   els.champTitle.textContent = LEAGUE.championship.badge;
   els.champText.textContent = progress.invited
-    ? "You're invited to the League Championship. Congratulations, trainer!"
+    ? "You're invited to the League Championship. Congratulations, champion-to-be!"
     : "Defeat all four Elite Four members to earn your invitation to the League Championship.";
 
   renderQr(displayName);
@@ -351,7 +351,7 @@ els.codeBtn.addEventListener("click", () => {
 // Check for new badges when the code is closed (the leader has usually just scanned it).
 els.codeDialog.addEventListener("close", refresh);
 
-// Keep the dashboard current: when the trainer comes back to the tab, and every minute while open.
+// Keep the dashboard current: when the player comes back to the tab, and every minute while open.
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible") refresh();
 });
