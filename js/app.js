@@ -106,15 +106,19 @@ function render() {
   }
 
   const statusLabel = { defeated: "Defeated", next: "Next challenge", locked: "Locked" };
-  els.e4Grid.innerHTML = progress.elite4.map((m) => `
-    <li>
-      <button type="button" class="badge ${m.status === "defeated" ? "earned" : m.status}" data-leader="${m.id}" aria-haspopup="dialog">
+  els.e4Grid.innerHTML = progress.elite4.map((m) => {
+    const inner = `
         ${elite4Svg(m, m.status)}
         <span class="badge-name">${escapeHtml(m.name)}</span>
         <span class="chip chip-${m.status}">${statusLabel[m.status]}</span>
-        ${m.defeated ? `<span class="badge-meta">${escapeHtml(formatDate(m.date))}</span>` : ""}
-      </button>
-    </li>`).join("");
+        ${m.defeated ? `<span class="badge-meta">${escapeHtml(formatDate(m.date))}</span>` : ""}`;
+    // Locked members can't be tapped; the others open their details pop-up.
+    return m.status === "locked"
+      ? `<li><div class="badge locked">${inner}</div></li>`
+      : `<li>
+          <button type="button" class="badge ${m.status === "defeated" ? "earned" : m.status}" data-leader="${m.id}" aria-haspopup="dialog">${inner}</button>
+        </li>`;
+  }).join("");
 
   // Championship invitation
   els.champPanel.classList.toggle("earned", progress.invited);
@@ -197,9 +201,11 @@ function openLeader(leaderId) {
 
   const trainerName = store.get(STORAGE_KEYS.trainer) || "";
   const player = leagueData ? findPlayer(leagueData, trainerName) : null;
-  const trainer = player ? player.name : trainerName;
   const progress = getProgress(player);
   const check = checkChallenge(player, leaderId);
+
+  // Locked Elite Four members don't open.
+  if (!isGym && progress.elite4.find((m) => m.id === leaderId)?.status === "locked") return;
 
   const discord = String(info.discord || "").trim().replace(/^@/, "");
   const discordId = /^\d{5,25}$/.test(String(info.discordId || "").trim()) ? String(info.discordId).trim() : "";
@@ -212,7 +218,7 @@ function openLeader(leaderId) {
     eyebrow = `Gym Leader · ${gym.badge}`;
     chip = gym.earned
       ? `<span class="chip chip-defeated">Earned ${escapeHtml(formatDate(gym.date))}</span>`
-      : `<span class="chip chip-next">Ready to challenge</span>`;
+      : "";
   } else {
     const member = progress.elite4.find((m) => m.id === leaderId);
     art = elite4Svg(member, member.status);
@@ -220,8 +226,7 @@ function openLeader(leaderId) {
     chip = {
       defeated: `<span class="chip chip-defeated">Defeated ${escapeHtml(formatDate(member.date))}</span>`,
       next: `<span class="chip chip-next">Next challenge</span>`,
-      locked: `<span class="chip chip-locked">Locked</span>`,
-    }[member.status];
+    }[member.status] || "";
   }
 
   // Gym: special rules. Elite Four: deck and decklist.
@@ -246,9 +251,7 @@ function openLeader(leaderId) {
 
   // Challenge request
   const locked = !isGym && !check.ok && !check.already;
-  const message = isGym
-    ? `Hi ${discord ? `@${discord}` : leader.name}! I'm ${trainer} from the Digimon League and I'd like to challenge you for the ${leader.award}. When are you free to battle?`
-    : `Hi ${discord ? `@${discord}` : leader.name}! I'm ${trainer} from the Digimon League and I'm ready for my Elite Four battle against you (${leader.name}). When are you free?`;
+  const message = `I would like to challenge you for the ${isGym ? leader.award : leader.name}. When are you available to play?`;
 
   let challenge;
   if (locked) {

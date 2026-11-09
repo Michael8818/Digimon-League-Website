@@ -341,8 +341,9 @@ label { font-weight: 600; font-size: 0.92rem; }
 
 .badge.next { outline: 2px solid var(--e4); outline-offset: -2px; }
 
-/* Badges are buttons that open the leader details pop-up. */
+/* Badges are buttons that open the leader details pop-up (locked ones are plain tiles). */
 .badge-grid > li { display: flex; }
+.badge-grid > li > .badge { width: 100%; }
 
 button.badge {
   width: 100%;
