@@ -10,61 +10,61 @@
 
   "gyms": {
     "red": {
-      "discord": "wwm0nkey",
-      "discordId": "138172170965745665",
-      "rules": ["Best of 3", "Leader plays a red deck"]
+      "name": "Tommy",
+      "discordId": "251120134381502464",
+      "rules": []
     },
     "blue": {
-      "discord": "",
-      "discordId": "",
+      "name": "Jake",
+      "discordId": "128986765846380548",
       "rules": []
     },
     "green": {
-      "discord": "",
-      "discordId": "",
+      "name": "Jace",
+      "discordId": "306992327409532938",
       "rules": []
     },
     "black": {
-      "discord": "",
-      "discordId": "",
+      "name": "Mike",
+      "discordId": "222167341029523468",
       "rules": []
     },
     "purple": {
-      "discord": "",
-      "discordId": "",
+      "name": "Nick L",
+      "discordId": "310198193604395009",
       "rules": []
     },
     "yellow": {
-      "discord": "",
-      "discordId": "",
+      "name": "Izaya",
+      "discordId": "240539328789348353",
       "rules": []
     }
   },
 
   "elite4": {
     "e4-1": {
-      "discord": "",
-      "discordId": "",
+      "name": "Avery",
+      "discordId": "251158651732099073",
       "deckName": "",
       "decklistUrl": ""
     },
     "e4-2": {
-      "discord": "",
-      "discordId": "",
+      "name": "Liz",
+      "discordId": "401600172599279616",
       "deckName": "",
       "decklistUrl": ""
     },
     "e4-3": {
-      "discord": "",
-      "discordId": "",
+      "name": "Walker",
+      "discordId": "135812634355171328",
       "deckName": "",
       "decklistUrl": ""
     },
     "e4-4": {
-      "discord": "Kairu",
+      "name": "Kyle",
       "discordId": "297846807063691265",
-      "deckName": "TS Slop",
-      "decklistUrl": "https://digimoncard.dev/p/DCGAYIAQlQxM4HHAUFEMSCBBQZCVDEzg8YZBAKCQlQxN4EGBEJUMTmBBBJCVDIwhkUEhwqHBcQCxQLCQlQyM4FGDUJUOCCBRRhFWDExgkUNRgRFWDEzhkcDRQFDBQNBRQY="
+      "deckName": "",
+      "decklistUrl": ""
     }
   }
 }
