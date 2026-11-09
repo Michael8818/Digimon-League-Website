@@ -220,7 +220,7 @@ els.setupForm.addEventListener("submit", async (e) => {
 });
 
 els.signoutBtn.addEventListener("click", async () => {
-  if (!(await askConfirm("Remove the leader access token from this device?", "Sign out", true))) return;
+  if (!(await askConfirm("Remove the leader access token from this device?", "Confirm", true))) return;
   store.remove(STORAGE_KEYS.token);
   store.remove(STORAGE_KEYS.role);
   showSetup(false);
@@ -298,7 +298,7 @@ function renderChallenger() {
   els.check.hidden = check.ok;
   els.check.textContent = check.ok ? "" : check.reason;
   els.recordBtn.disabled = !check.ok || busy;
-  els.recordBtn.textContent = `Record win: ${player ? player.name : typed} beat ${leader.name}`;
+  els.recordBtn.textContent = "Record Win";
 
   // The organizer can undo a mistaken win.
   const canRemove = getRole() === ORGANIZER && check.already;
@@ -323,7 +323,7 @@ async function save(kind) {
   const question = kind === "record"
     ? `Record that ${typed} beat ${leader.name}?`
     : `Remove ${typed}'s win against ${leader.name}?`;
-  if (!(await askConfirm(question, kind === "record" ? "Record win" : "Remove win", kind !== "record"))) return;
+  if (!(await askConfirm(question, "Confirm", kind !== "record"))) return;
 
   busy = true;
   renderChallenger();
