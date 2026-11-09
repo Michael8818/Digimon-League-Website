@@ -439,19 +439,7 @@ button.badge:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
 
 .rules-box ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
 
-textarea {
-  width: 100%;
-  font: inherit;
-  font-size: 0.92rem;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--surface-2);
-  color: var(--text);
-  resize: vertical;
-}
-
-textarea:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+.leader-section:last-child { margin-bottom: 0; }
 
 .small { font-size: 0.85rem; margin: 0; }
 .note-ok { color: var(--ok); }

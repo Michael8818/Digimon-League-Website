@@ -44,8 +44,8 @@ Tapping a gym badge or Elite Four member on the dashboard opens a pop-up with th
 
 | Field | Who | What it does |
 | --- | --- | --- |
-| `discord` | everyone | Discord username shown in the pop-up (no `@`). |
-| `discordId` | everyone | Numeric Discord user ID. With it, **Send challenge on Discord** copies the challenge message and opens the leader's Discord profile, where the trainer taps **Message** and pastes. Without it, the button only copies the message. |
+| `discord` | everyone | Discord username (no `@`), used in the challenge message. Only shown on screen when there's no `discordId`, so trainers know who to message. |
+| `discordId` | everyone | Numeric Discord user ID. With it, **Send challenge** copies the challenge message and opens the leader's Discord profile, where the trainer taps **Message** and pastes. Without it, the button only copies the message. |
 | `rules` | gym leaders | Special rules: a list of lines, e.g. `["Best of 3", "No banned cards"]`. Use `[]` for none. |
 | `deckName` | Elite Four | Name of their deck. |
 | `decklistUrl` | Elite Four | Full link (starting with `https://`) for the **View decklist** button. |

@@ -165,6 +165,30 @@ function rulesHtml(rules) {
   return `<ul>${lines.map((l) => `<li>${escapeHtml(l)}</li>`).join("")}</ul>`;
 }
 
+let challengeMessage = "";
+
+// Copy text without showing it. Tries the modern clipboard first, then the older copy
+// command, which still works in some in-app browsers that block the modern one.
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (err) {
+    console.warn("Clipboard API copy failed, trying fallback:", err);
+  }
+  const area = document.createElement("textarea");
+  area.value = text;
+  area.setAttribute("readonly", "");
+  area.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;";
+  // Inside the open pop-up, so the browser lets it be selected.
+  (els.leaderDialog.open ? els.leaderDialog : document.body).appendChild(area);
+  area.select();
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch { ok = false; }
+  area.remove();
+  return ok;
+}
+
 function openLeader(leaderId) {
   const leader = getLeader(leaderId);
   if (!leader) return;
@@ -237,17 +261,17 @@ function openLeader(leaderId) {
       <p class="muted small">This leader's Discord hasn't been added yet.</p>`;
   } else {
     const action = discordId
-      ? `<a id="challenge-btn" class="button block" href="https://discord.com/users/${discordId}" target="_blank" rel="noopener noreferrer">Send challenge on Discord</a>`
-      : `<button id="challenge-btn" class="button block" type="button">Copy challenge message</button>`;
+      ? `<a id="challenge-btn" class="button block" href="https://discord.com/users/${discordId}" target="_blank" rel="noopener noreferrer">Send challenge</a>`
+      : `<button id="challenge-btn" class="button block" type="button">Send challenge</button>`;
+    // Without a Discord ID we can't open their profile, so the note says who to message.
     const help = discordId
-      ? "Copies your message and opens their Discord profile. Tap Message, then paste."
-      : `Copies your message. Then find @${escapeHtml(discord)} in Discord and paste it.`;
+      ? "Copies a challenge message and opens their Discord profile. Tap Message, then paste it."
+      : `Copies a challenge message. Find @${escapeHtml(discord)} in Discord and paste it.`;
     challenge = `
-      <label for="challenge-msg" class="label">Challenge message</label>
-      <textarea id="challenge-msg" rows="4">${escapeHtml(message)}</textarea>
       ${action}
       <p id="challenge-note" class="muted small">${help}</p>`;
   }
+  challengeMessage = message;
 
   els.leaderBody.innerHTML = `
     <div class="leader-head">
@@ -257,9 +281,6 @@ function openLeader(leaderId) {
         <h2 id="leader-title" tabindex="-1">${escapeHtml(leader.name)}</h2>
         ${chip}
       </div>
-    </div>
-    <div class="leader-section">
-      <div class="fact"><span>Discord</span><strong>${discord ? `@${escapeHtml(discord)}` : `<span class="muted">Not added yet</span>`}</strong></div>
     </div>
     ${specifics}
     <div class="leader-section">${challenge}</div>`;
@@ -281,18 +302,14 @@ function openLeader(leaderId) {
 els.leaderBody.addEventListener("click", async (e) => {
   const btn = e.target.closest("#challenge-btn");
   if (!btn) return;
-  const msg = els.leaderBody.querySelector("#challenge-msg");
   const note = els.leaderBody.querySelector("#challenge-note");
-  try {
-    await navigator.clipboard.writeText(msg.value);
+  if (await copyText(challengeMessage)) {
     note.textContent = btn.tagName === "A"
       ? "Message copied! In Discord, tap Message and paste it."
       : "Message copied! Find them in Discord and paste it in a message.";
     note.className = "small note-ok";
-  } catch {
-    msg.focus();
-    msg.select();
-    note.textContent = "Couldn't copy automatically. Copy the message above, then paste it in Discord.";
+  } else {
+    note.textContent = "Couldn't copy the message automatically. Just message them in Discord to set up your battle.";
     note.className = "small note-warn";
   }
 });
