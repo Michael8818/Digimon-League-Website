@@ -254,7 +254,7 @@ function renderRole() {
   els.roleName.textContent = leader.name;
   els.roleArt.innerHTML = leader.type === "gym"
     ? gymBadgeSvg(LEAGUE.gyms.find((g) => g.id === leader.id), true)
-    : elite4Svg({ order: leader.order }, "next");
+    : elite4Svg({ ...LEAGUE.elite4[leader.order - 1], order: leader.order }, "defeated"); // shown in full color
 }
 
 async function loadData() {

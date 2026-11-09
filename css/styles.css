@@ -328,12 +328,13 @@ label { font-weight: 600; font-size: 0.92rem; }
 
 .badge-art {
   width: 100%;
-  max-width: 72px;
+  max-width: 84px;
   height: auto;
   color: var(--muted);
 }
 
-.badge-art.earned { filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18)); }
+.badge-art.earned { filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.28)); }
+.badge-art.is-locked { opacity: 0.6; }
 
 .badge-name { font-weight: 700; font-size: 0.9rem; }
 .badge-meta { font-size: 0.78rem; color: var(--muted); }

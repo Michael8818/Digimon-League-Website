@@ -21,12 +21,13 @@ const LEAGUE = {
     { id: "yellow", leader: "Yellow Gym Leader", badge: "Yellow Badge", color: "#f5b800" },
   ],
 
-  // The Elite 4, in the order they must be challenged.
+  // The Elite 4, in the order they must be challenged. Each crest gets grander by rank;
+  // color sets its metal (bronze, silver, gold, diamond by default).
   elite4: [
-    { id: "e4-1", name: "Elite Four #1" },
-    { id: "e4-2", name: "Elite Four #2" },
-    { id: "e4-3", name: "Elite Four #3" },
-    { id: "e4-4", name: "Elite Four #4" },
+    { id: "e4-1", name: "Elite Four #1", color: "#c0773a" },
+    { id: "e4-2", name: "Elite Four #2", color: "#9eabbf" },
+    { id: "e4-3", name: "Elite Four #3", color: "#e0a412" },
+    { id: "e4-4", name: "Elite Four #4", color: "#3d8bff" },
   ],
 
   championship: { badge: "Championship Invitation" },

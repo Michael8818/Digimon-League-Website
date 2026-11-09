@@ -172,33 +172,171 @@ function compareProgress(a, b) {
 }
 
 // ---------- Badge artwork (inline SVG) ----------
-const LOCK_GLYPH = `
-  <g class="lock">
-    <path d="M26.5 31v-4.5a5.5 5.5 0 0 1 11 0V31" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-    <rect x="23" y="30" width="18" height="14" rx="3" fill="currentColor"/>
-  </g>`;
+// Every SVG gets its own gradient ids, so badges in different colors never share one.
+let svgUid = 0;
 
-function gymBadgeSvg(gym, earned) {
-  const fill = earned ? gym.color : "var(--locked)";
+// Mix a #rrggbb color toward white (amt > 0) or black (amt < 0).
+function shade(hex, amt) {
+  const n = parseInt(String(hex).replace("#", ""), 16) || 0;
+  const t = amt > 0 ? 255 : 0;
+  const a = Math.abs(amt);
+  const ch = (v) => Math.round(v + (t - v) * a);
+  return `rgb(${ch(n >> 16)},${ch((n >> 8) & 255)},${ch(n & 255)})`;
+}
+
+// Five tones of one color, from highlight to deep shadow, for a metallic bevel.
+function tones(hex) {
+  return { hi: shade(hex, 0.6), light: shade(hex, 0.3), base: shade(hex, 0), dark: shade(hex, -0.3), deep: shade(hex, -0.55) };
+}
+
+// Not earned yet: dull gunmetal.
+const LOCKED_TONES = { hi: "#a3a9b5", light: "#7c828e", base: "#5e6470", dark: "#454a55", deep: "#2f333c" };
+
+function lockGlyph(cx, cy) {
   return `
-    <svg class="badge-art ${earned ? "earned" : "is-locked"}" viewBox="0 0 64 64" aria-hidden="true">
-      <polygon points="32,3 57,17.5 57,46.5 32,61 7,46.5 7,17.5" fill="${fill}" stroke="var(--badge-stroke)" stroke-width="2"/>
-      <polygon points="32,13 48,22.5 48,41.5 32,51 16,41.5 16,22.5" fill="rgba(255,255,255,${earned ? 0.22 : 0.06})"/>
+    <g transform="translate(${cx - 9} ${cy - 10})">
+      <path d="M4.5 9V6.5a4.5 4.5 0 0 1 9 0V9" fill="none" stroke="#e8eaf0" stroke-width="2.4" stroke-linecap="round"/>
+      <rect x="2" y="8.5" width="14" height="11" rx="2.5" fill="#e8eaf0"/>
+      <circle cx="9" cy="13.5" r="1.7" fill="#454a55"/>
+    </g>`;
+}
+
+const pts = (list) => list.map((p) => p.map((v) => Math.round(v * 10) / 10).join(",")).join(" ");
+
+// Hexagon corners, pointy side up: top, top-right, bottom-right, bottom, bottom-left, top-left.
+function hexCorners(cx, cy, r) {
+  return [-90, -30, 30, 90, 150, 210].map((d) => {
+    const a = (d * Math.PI) / 180;
+    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  });
+}
+
+// One laurel branch up the left side; the right side is a mirror image.
+function laurelBranch(fill) {
+  const R = 38, cx = 50, cy = 50;
+  const at = (deg, r = R) => [cx + r * Math.cos((deg * Math.PI) / 180), cy + r * Math.sin((deg * Math.PI) / 180)];
+  const [sx, sy] = at(118);
+  const [ex, ey] = at(222);
+  let leaves = "";
+  for (let i = 0; i < 8; i++) {
+    const deg = 124 + i * 13;
+    const along = deg + 90; // direction the branch grows (upward)
+    for (const side of [1, -1]) {
+      const [x, y] = at(deg, R + side * 3.6);
+      leaves += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="6" ry="2.5" transform="rotate(${(along + side * 32).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})" fill="${fill}"/>`;
+    }
+  }
+  const [tx, ty] = at(228);
+  leaves += `<ellipse cx="${tx.toFixed(1)}" cy="${ty.toFixed(1)}" rx="6" ry="2.5" transform="rotate(${228 + 90} ${tx.toFixed(1)} ${ty.toFixed(1)})" fill="${fill}"/>`;
+  return `
+    <path d="M${sx.toFixed(1)} ${sy.toFixed(1)} A${R} ${R} 0 0 1 ${ex.toFixed(1)} ${ey.toFixed(1)}" fill="none" stroke="${fill}" stroke-width="1.6"/>
+    ${leaves}`;
+}
+
+// Gym badge: beveled hexagon medal with a gem, laurel wreath and ribbon tails.
+function gymBadgeSvg(gym, earned) {
+  const t = earned ? tones(gym.color) : LOCKED_TONES;
+  const id = `gb${++svgUid}`;
+  const O = hexCorners(50, 44, 30);
+  const I = hexCorners(50, 44, 21);
+  const G = hexCorners(50, 44, 9);
+  // Bevel facets lit from the top-left: top-right, right, bottom-right, bottom-left, left, top-left.
+  const facetTone = [t.light, t.dark, t.deep, t.dark, t.light, t.hi];
+  const facets = O.map((p, k) => {
+    const n = (k + 1) % 6;
+    return `<polygon points="${pts([O[k], O[n], I[n], I[k]])}" fill="${facetTone[k]}"/>`;
+  }).join("");
+
+  return `
+    <svg class="badge-art ${earned ? "earned" : "is-locked"}" viewBox="0 0 100 110" aria-hidden="true">
+      <defs>
+        <linearGradient id="${id}-leaf" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="${t.hi}"/><stop offset="1" stop-color="${t.dark}"/>
+        </linearGradient>
+        <linearGradient id="${id}-face" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="${t.light}"/><stop offset="0.55" stop-color="${t.base}"/><stop offset="1" stop-color="${t.dark}"/>
+        </linearGradient>
+        <linearGradient id="${id}-gem" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="${t.hi}"/><stop offset="1" stop-color="${t.light}"/>
+        </linearGradient>
+        <linearGradient id="${id}-ribbon" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${t.dark}"/><stop offset="1" stop-color="${t.base}"/>
+        </linearGradient>
+      </defs>
+
+      <!-- laurel wreath -->
+      <g>${laurelBranch(`url(#${id}-leaf)`)}</g>
+      <g transform="translate(100 0) scale(-1 1)">${laurelBranch(`url(#${id}-leaf)`)}</g>
+
+      <!-- ribbon tails -->
+      <polygon points="37,62 49,62 49,104 43,97 37,104" fill="url(#${id}-ribbon)" stroke="${t.deep}" stroke-width="1"/>
+      <polygon points="51,62 63,62 63,104 57,97 51,104" fill="url(#${id}-ribbon)" stroke="${t.deep}" stroke-width="1"/>
+
+      <!-- medal -->
+      ${facets}
+      <polygon points="${pts(O)}" fill="none" stroke="${t.deep}" stroke-width="1.6" stroke-linejoin="round"/>
+      <polygon points="${pts(I)}" fill="url(#${id}-face)" stroke="${t.deep}" stroke-width="1.4" stroke-linejoin="round"/>
+
       ${earned
-        ? `<polygon points="32,22 41,32 32,42 23,32" fill="rgba(255,255,255,0.9)"/>`
-        : LOCK_GLYPH}
+        ? `<polygon points="${pts(G)}" fill="url(#${id}-gem)" stroke="${t.deep}" stroke-width="1"/>
+           <polygon points="${pts([G[5], G[0], [50, 44]])}" fill="#fff" opacity="0.55"/>
+           <polygon points="${pts([G[2], G[3], [50, 44]])}" fill="${t.dark}" opacity="0.35"/>
+           <line x1="44" y1="49" x2="52" y2="37" stroke="#fff" stroke-width="1.6" opacity="0.7"/>`
+        : lockGlyph(50, 44)}
+
+      <!-- clasp -->
+      <rect x="41" y="72" width="18" height="12" rx="2.5" fill="${t.dark}" stroke="${t.deep}" stroke-width="1.2"/>
+      <circle cx="50" cy="78" r="3.8" fill="${earned ? t.hi : t.light}" stroke="${t.deep}" stroke-width="1"/>
     </svg>`;
 }
 
+// Elite Four crest: angular emblem that gets grander by rank
+// (#2 adds side blades, #3 adds crown spikes, #4 adds wings).
 function elite4Svg(member, status) {
-  const defeated = status === "defeated";
+  const colored = status === "defeated";
+  const t = colored ? tones(member.color || "#6366f1") : LOCKED_TONES;
+  const rank = member.order || 1;
+  const id = `e4${++svgUid}`;
+  const mirror = (inner) => `<g>${inner}</g><g transform="translate(100 0) scale(-1 1)">${inner}</g>`;
+
+  // Four fanned feathers per wing, drawn back (top) to front (bottom).
+  const wings = rank >= 4 ? mirror(`
+    <path d="M37 42 Q15 20 1 16 Q14 34 34 52 Z" fill="${t.light}" stroke="${t.deep}" stroke-width="1.1" stroke-linejoin="round"/>
+    <path d="M36 47 Q13 32 0 31 Q15 45 33 57 Z" fill="url(#${id}-metal)" stroke="${t.deep}" stroke-width="1.1" stroke-linejoin="round"/>
+    <path d="M35 52 Q15 45 3 47 Q17 56 32 61 Z" fill="${t.base}" stroke="${t.deep}" stroke-width="1.1" stroke-linejoin="round"/>
+    <path d="M34 57 Q19 57 9 62 Q22 65 32 64 Z" fill="${t.dark}" stroke="${t.deep}" stroke-width="1.1" stroke-linejoin="round"/>`) : "";
+  const blades = rank >= 2 ? mirror(`
+    <polygon points="30,52 5,41 19,63 31,62" fill="${t.light}" stroke="${t.deep}" stroke-width="1.2" stroke-linejoin="round"/>
+    <polygon points="30,52 19,63 31,62" fill="${t.dark}" opacity="0.6"/>`) : "";
+  const crown = rank >= 3 ? mirror(`
+    <polygon points="42,27 34,5 49,19" fill="${t.light}" stroke="${t.deep}" stroke-width="1.2" stroke-linejoin="round"/>`) : "";
+
+  const center = status === "locked"
+    ? lockGlyph(50, 53)
+    : `<text x="50" y="58" text-anchor="middle" font-size="15" font-weight="800" fill="#fff" font-family="system-ui, sans-serif">${rank}</text>`;
+
   return `
-    <svg class="badge-art ${defeated ? "earned" : "is-locked"}" viewBox="0 0 64 64" aria-hidden="true">
-      <circle cx="32" cy="32" r="28" fill="${defeated ? "var(--e4)" : "var(--locked)"}" stroke="var(--badge-stroke)" stroke-width="2"/>
-      <circle cx="32" cy="32" r="20" fill="rgba(255,255,255,${defeated ? 0.18 : 0.06})"/>
-      ${status === "locked"
-        ? LOCK_GLYPH
-        : `<text x="32" y="40" text-anchor="middle" font-size="22" font-weight="800" fill="${defeated ? "#fff" : "currentColor"}">${member.order}</text>`}
+    <svg class="badge-art ${colored ? "earned" : status === "next" ? "is-next" : "is-locked"}" viewBox="0 0 100 110" aria-hidden="true">
+      <defs>
+        <linearGradient id="${id}-metal" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="${t.hi}"/><stop offset="0.5" stop-color="${t.base}"/><stop offset="1" stop-color="${t.dark}"/>
+        </linearGradient>
+        <linearGradient id="${id}-plate" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="${t.base}"/><stop offset="1" stop-color="${t.deep}"/>
+        </linearGradient>
+      </defs>
+      ${wings}
+      ${blades}
+      ${crown}
+      <!-- crest -->
+      <path d="M50 6 L63 30 L86 20 L73 52 L50 102 L27 52 L14 20 L37 30 Z" fill="url(#${id}-metal)" stroke="${t.deep}" stroke-width="1.6" stroke-linejoin="round"/>
+      <path d="M50 6 L63 30 L86 20 L73 52 L50 102 Z" fill="${t.deep}" opacity="0.28"/>
+      <!-- inner plate -->
+      <path d="M50 24 L59 40 L69 36 L62 56 L50 84 L38 56 L31 36 L41 40 Z" fill="url(#${id}-plate)" stroke="${t.deep}" stroke-width="1.2" stroke-linejoin="round"/>
+      <path d="M50 24 L41 40 L31 36 L38 56 L50 84 Z" fill="#fff" opacity="0.12"/>
+      <!-- medallion -->
+      <circle cx="50" cy="53" r="11" fill="${t.deep}" stroke="${t.hi}" stroke-width="1.6"/>
+      ${center}
     </svg>`;
 }
 
@@ -224,7 +362,7 @@ function miniBadgesHtml(progress) {
   const e4 = progress.elite4.map((m) => `
     <svg class="mini" viewBox="0 0 20 20" role="img" aria-label="${escapeHtml(m.name)}${m.defeated ? " defeated" : ""}">
       <title>${escapeHtml(m.name)}${m.defeated ? " defeated" : ""}</title>
-      <circle cx="10" cy="10" r="8" fill="${m.defeated ? "var(--e4)" : "none"}"
+      <circle cx="10" cy="10" r="8" fill="${m.defeated ? (m.color || "var(--e4)") : "none"}"
         stroke="${m.defeated ? "var(--badge-stroke)" : "var(--mini-off)"}" stroke-width="1.5"/>
     </svg>`).join("");
   return `${gyms}<span class="mini-sep"></span>${e4}`;
