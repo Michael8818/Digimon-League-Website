@@ -11,7 +11,7 @@ All results live in `players.json` inside a GitHub gist (set in [`js/config.js`]
 ## League rules the site enforces
 
 1. There are 6 gym badges: red, blue, green, black, purple and yellow. They can be won in any order.
-2. With all 6 badges, a trainer can challenge the Elite Four, **in order** (#1, then #2, #3, #4). Wins carry over.
+2. With all 6 badges, a trainer can challenge Elite Four #1, #2 and #3 **in any order**. Elite Four #4 is the final battle and unlocks only after the other three are beaten. Wins carry over.
 3. Beating all 4 Elite Four earns the **Championship Invitation**.
 
 ## How recording a win works

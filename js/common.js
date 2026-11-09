@@ -117,15 +117,18 @@ function getProgress(player) {
   const gymCount = gyms.filter((g) => g.earned).length;
   const allGyms = gymCount === LEAGUE.gyms.length;
 
-  let previousBeaten = true;
+  // Elite Four rules: with all gym badges, every member except the last can be challenged in
+  // any order. The last member (#4) unlocks only after all the others are beaten.
+  // "next" means available to challenge now.
+  const lastIndex = LEAGUE.elite4.length - 1;
+  const othersBeaten = LEAGUE.elite4.slice(0, lastIndex).every((m) => e4Wins[m.id]);
   const elite4 = LEAGUE.elite4.map((m, i) => {
     const date = e4Wins[m.id] || null;
     const defeated = Boolean(date);
     let status = "locked";
     if (defeated) status = "defeated";
-    else if (allGyms && previousBeaten) status = "next";
-    previousBeaten = previousBeaten && defeated;
-    return { ...m, order: i + 1, defeated, date, status };
+    else if (allGyms && (i < lastIndex || othersBeaten)) status = "next";
+    return { ...m, order: i + 1, defeated, date, status, isFinal: i === lastIndex };
   });
   const e4Count = elite4.filter((m) => m.defeated).length;
   const invited = allGyms && e4Count === LEAGUE.elite4.length;
@@ -154,10 +157,16 @@ function checkChallenge(player, leaderId) {
     return { ok: false, reason: `Needs all ${LEAGUE.gyms.length} gym badges first (has ${progress.gymCount}).` };
   }
   if (member.status !== "next") {
-    const next = progress.elite4.find((m) => m.status === "next");
-    return { ok: false, reason: `Elite Four must be beaten in order. Next up: ${next ? next.name : "none"}.` };
+    const missing = progress.elite4.filter((m) => !m.isFinal && !m.defeated).map((m) => m.name);
+    return { ok: false, reason: `${member.name} is the final battle. Beat ${listNames(missing)} first.` };
   }
   return { ok: true };
+}
+
+// "A", "A and B", "A, B and C"
+function listNames(names) {
+  if (names.length <= 1) return names.join("");
+  return `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
 }
 
 // Sort for the leaderboard: invitation, then Elite 4 wins, then badges, then whoever got there first.

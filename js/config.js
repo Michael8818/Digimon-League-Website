@@ -21,7 +21,8 @@ const LEAGUE = {
     { id: "yellow", leader: "Yellow Gym Leader", badge: "Yellow Badge", color: "#f5b800" },
   ],
 
-  // The Elite 4, in the order they must be challenged. Each crest gets grander by rank;
+  // The Elite 4. With all gym badges, any member can be challenged except the last one,
+  // which unlocks only after the others are beaten. Each crest gets grander by rank;
   // color sets its metal (bronze, silver, gold, diamond by default).
   elite4: [
     { id: "e4-1", name: "Elite Four #1", color: "#c0773a" },

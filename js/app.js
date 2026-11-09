@@ -96,16 +96,19 @@ function render() {
 
   // Elite Four
   els.e4Count.textContent = `${progress.e4Count} / ${LEAGUE.elite4.length}`;
-  const next = progress.elite4.find((m) => m.status === "next");
+  const finalMember = progress.elite4.find((m) => m.isFinal);
+  const available = progress.elite4.filter((m) => m.status === "next");
   if (!progress.allGyms) {
-    els.e4Hint.textContent = `Earn all ${LEAGUE.gyms.length} gym badges to challenge the Elite Four. They must be beaten in order.`;
-  } else if (next) {
-    els.e4Hint.textContent = `You can challenge the Elite Four! Next up: ${next.name}.`;
+    els.e4Hint.textContent = `Earn all ${LEAGUE.gyms.length} gym badges to challenge the Elite Four. ${finalMember.name} is fought last.`;
+  } else if (finalMember.status === "next") {
+    els.e4Hint.textContent = `Only ${finalMember.name} remains. It's the final battle!`;
+  } else if (available.length) {
+    els.e4Hint.textContent = `Challenge ${listNames(available.map((m) => m.name))} in any order. ${finalMember.name} unlocks after the others are beaten.`;
   } else {
     els.e4Hint.textContent = "You've defeated the entire Elite Four!";
   }
 
-  const statusLabel = { defeated: "Defeated", next: "Next challenge", locked: "Locked" };
+  const statusLabel = { defeated: "Defeated", next: "Available", locked: "Locked" };
   els.e4Grid.innerHTML = progress.elite4.map((m) => {
     const inner = `
         ${elite4Svg(m, m.status)}
@@ -225,7 +228,7 @@ function openLeader(leaderId) {
     eyebrow = `Elite Four · Battle ${member.order} of ${LEAGUE.elite4.length}`;
     chip = {
       defeated: `<span class="chip chip-defeated">Defeated ${escapeHtml(formatDate(member.date))}</span>`,
-      next: `<span class="chip chip-next">Next challenge</span>`,
+      next: `<span class="chip chip-next">Available</span>`,
     }[member.status] || "";
   }
 
