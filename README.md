@@ -3,7 +3,7 @@
 Badge tracker for the Digimon League, hosted on GitHub Pages.
 
 - **Dashboard** (`index.html`): asks for your Discord name on first visit and remembers it. Shows your 6 gym badges, your Elite Four progress and your Championship Invitation. The **Challenge Code** button shows a QR code for leaders to scan.
-- **Leaderboard** (`leaderboard.html`): every player and their badges.
+- **Leaderboard** (`leaderboard.html`): every Tamer and their badges.
 - **Leader tools** (`leader.html`): leaders scan a challenger's QR code (or type the name) and record the win.
 
 All results live in `players.json` inside a GitHub gist (set in [`js/config.js`](js/config.js) under `gist`), so recording wins never commits to this repo. There is no database.
@@ -11,7 +11,7 @@ All results live in `players.json` inside a GitHub gist (set in [`js/config.js`]
 ## League rules the site enforces
 
 1. There are 6 gym badges: red, blue, green, black, purple and yellow. They can be won in any order.
-2. With all 6 badges, a player can challenge Elite Four #1, #2 and #3 **in any order**. Elite Four #4 is the final battle and unlocks only after the other three are beaten. Wins carry over.
+2. With all 6 badges, a Tamer can challenge Elite Four #1, #2 and #3 **in any order**. Elite Four #4 is the final battle and unlocks only after the other three are beaten. Wins carry over.
 3. Beating all 4 Elite Four earns the **Championship Invitation**.
 
 ## How recording a win works
@@ -21,7 +21,7 @@ GitHub Pages can only serve files, so the leader page saves wins through the Git
 1. After a battle, the challenger opens their **Dashboard**, taps **Challenge Code**, and shows the QR code.
 2. The leader scans it, either with the **Scan QR** button on the leader page or with the phone's camera app. The leader page opens with the challenger's name filled in.
 3. The leader taps **Record win**. The page saves the win to `players.json` in the gist.
-4. Dashboards and the leaderboard read the newest version of the gist, so the win shows up the next time they refresh (when the player closes their Challenge Code, or within a minute).
+4. Dashboards and the leaderboard read the newest version of the gist, so the win shows up the next time they refresh (when the Tamer closes their Challenge Code, or within a minute).
 
 If two leaders save at the same moment, the leader page notices from the gist's history and re-applies its win on top of the other one, so no win is lost.
 
@@ -47,15 +47,15 @@ Tapping a gym badge or Elite Four member on the dashboard opens a pop-up with th
 
 | Field | Who | What it does |
 | --- | --- | --- |
-| `discord` | everyone | Discord username (no `@`), used in the challenge message. Only shown on screen when there's no `discordId`, so players know who to message. |
-| `discordId` | everyone | Numeric Discord user ID. With it, **Send challenge** copies the challenge message and opens the leader's Discord profile, where the player taps **Message** and pastes. Without it, the button only copies the message. |
+| `discord` | everyone | Discord username (no `@`), used in the challenge message. Only shown on screen when there's no `discordId`, so Tamers know who to message. |
+| `discordId` | everyone | Numeric Discord user ID. With it, **Send challenge** copies the challenge message and opens the leader's Discord profile, where the Tamer taps **Message** and pastes. Without it, the button only copies the message. |
 | `rules` | gym leaders | Special rules: a list of lines, e.g. `["Best of 3", "No banned cards"]`. Use `[]` for none. |
 | `deckName` | Elite Four | Name of their deck. |
 | `decklistUrl` | Elite Four | Full link (starting with `https://`) for the **View decklist** button. |
 
 To get a Discord user ID: in Discord open **User Settings → Advanced**, turn on **Developer Mode**, then right-click (desktop) or long-press (phone) the person and choose **Copy User ID**.
 
-Discord doesn't let websites open a DM or pre-fill a message, so the button copies the message for the player to paste.
+Discord doesn't let websites open a DM or pre-fill a message, so the button copies the message for the Tamer to paste.
 
 ## Renaming leaders and badges
 

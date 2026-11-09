@@ -1,6 +1,6 @@
 {
   "_help": [
-    "Details shown when a player taps a gym badge or Elite Four member on their dashboard.",
+    "Details shown when a Tamer taps a gym badge or Elite Four member on their dashboard.",
     "discord: the leader's Discord username, without the @.",
     "discordId: the leader's numeric Discord user ID, so the Send challenge button can open their profile. Get it in Discord: User Settings > Advanced > turn on Developer Mode, then right-click (or long-press) the person > Copy User ID.",
     "rules (gym leaders): special rules, as a list of lines. Use [] for none.",

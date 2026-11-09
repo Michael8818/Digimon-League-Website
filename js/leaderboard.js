@@ -13,11 +13,11 @@ function renderBoard(data) {
 
   const invited = rows.filter((r) => r.progress.invited).length;
   summaryEl.textContent = rows.length
-    ? `${rows.length} player${rows.length === 1 ? "" : "s"} · ${invited} championship invitation${invited === 1 ? "" : "s"}`
+    ? `${rows.length} Tamer${rows.length === 1 ? "" : "s"} · ${invited} championship invitation${invited === 1 ? "" : "s"}`
     : "";
 
   if (!rows.length) {
-    boardEl.innerHTML = `<li class="empty">No players yet. Wins show up here once a leader records them.</li>`;
+    boardEl.innerHTML = `<li class="empty">No Tamers yet. Wins show up here once a leader records them.</li>`;
     return;
   }
 

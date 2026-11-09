@@ -269,12 +269,12 @@ async function loadData() {
   }
 }
 
-// Name suggestions for the challenger box, plus the player count.
+// Name suggestions for the challenger box, plus the Tamer count.
 function renderPlayerList() {
   const count = leagueData.players.length;
   els.playerList.innerHTML = leagueData.players
     .map((p) => `<option value="${escapeHtml(p.name)}"></option>`).join("");
-  els.loadStatus.textContent = `${count} player${count === 1 ? "" : "s"} on record.`;
+  els.loadStatus.textContent = `${count} Tamer${count === 1 ? "" : "s"} on record.`;
 }
 
 function renderChallenger() {
@@ -347,7 +347,7 @@ async function save(kind) {
       } else {
         if (!player || !player[field]?.[leaderId]) throw new Error("That win isn't on record.");
         delete player[field][leaderId];
-        // A player with no wins left is taken off the leaderboard entirely.
+        // A Tamer with no wins left is taken off the leaderboard entirely.
         if (!Object.keys(player.gyms || {}).length && !Object.keys(player.elite4 || {}).length) {
           data.players.splice(data.players.indexOf(player), 1);
         }
