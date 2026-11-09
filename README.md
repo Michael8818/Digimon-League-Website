@@ -38,6 +38,22 @@ GitHub Pages can only serve files, so the leader page saves wins through the Git
 - Anyone with a leader link can edit `players.json`, so share the links only with leaders. If one leaks, delete the token on GitHub (all links stop working), make a new one, and send out new links.
 - The organizer can undo a mistaken win from the leader page (**Remove this win**). Every change is also a commit, so the history is in Git.
 
+## Leader details (Discord, rules, decks)
+
+Tapping a gym badge or Elite Four member on the dashboard opens a pop-up with that leader's details. Edit them in [`data/leaders.json`](data/leaders.json). The easiest way is the pencil icon on GitHub, then **Commit changes**. The site updates in about a minute.
+
+| Field | Who | What it does |
+| --- | --- | --- |
+| `discord` | everyone | Discord username shown in the pop-up (no `@`). |
+| `discordId` | everyone | Numeric Discord user ID. With it, **Send challenge on Discord** copies the challenge message and opens the leader's Discord profile, where the trainer taps **Message** and pastes. Without it, the button only copies the message. |
+| `rules` | gym leaders | Special rules: a list of lines, e.g. `["Best of 3", "No banned cards"]`. Use `[]` for none. |
+| `deckName` | Elite Four | Name of their deck. |
+| `decklistUrl` | Elite Four | Full link (starting with `https://`) for the **View decklist** button. |
+
+To get a Discord user ID: in Discord open **User Settings → Advanced**, turn on **Developer Mode**, then right-click (desktop) or long-press (phone) the person and choose **Copy User ID**.
+
+Discord doesn't let websites open a DM or pre-fill a message, so the button copies the message for the trainer to paste.
+
 ## Renaming leaders and badges
 
 Edit [`js/config.js`](js/config.js). Change the `leader`, `badge` and `name` text freely, but **don't change the `id` values** once wins are recorded, because they're the keys in `players.json`.

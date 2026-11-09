@@ -53,6 +53,24 @@ async function loadLeagueData() {
   return normalizeData(await res.json());
 }
 
+// Extra leader details (Discord, rules, decks) from data/leaders.json. Missing file = no details.
+async function loadLeaderDetails() {
+  const res = await fetch(`data/leaders.json?v=${Date.now()}`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Couldn't load leader details (${res.status}).`);
+  const data = await res.json();
+  return { gyms: data?.gyms || {}, elite4: data?.elite4 || {} };
+}
+
+// Only allow real web links (blocks javascript: and other schemes).
+function safeUrl(value) {
+  try {
+    const url = new URL(String(value || "").trim());
+    return url.protocol === "https:" || url.protocol === "http:" ? url.href : "";
+  } catch {
+    return "";
+  }
+}
+
 function normalizeData(data) {
   const players = Array.isArray(data?.players) ? data.players : [];
   return {

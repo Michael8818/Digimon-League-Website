@@ -1,0 +1,70 @@
+{
+  "_help": [
+    "Details shown when a trainer taps a gym badge or Elite Four member on their dashboard.",
+    "discord: the leader's Discord username, without the @.",
+    "discordId: the leader's numeric Discord user ID, so the Send challenge button can open their profile. Get it in Discord: User Settings > Advanced > turn on Developer Mode, then right-click (or long-press) the person > Copy User ID.",
+    "rules (gym leaders): special rules, as a list of lines. Use [] for none.",
+    "deckName and decklistUrl (Elite Four): the deck's name and a link to the full decklist.",
+    "Leave any value as \"\" until it's known. Names and badge colors live in js/config.js."
+  ],
+
+  "gyms": {
+    "red": {
+      "discord": "",
+      "discordId": "",
+      "rules": []
+    },
+    "blue": {
+      "discord": "",
+      "discordId": "",
+      "rules": []
+    },
+    "green": {
+      "discord": "",
+      "discordId": "",
+      "rules": []
+    },
+    "black": {
+      "discord": "",
+      "discordId": "",
+      "rules": []
+    },
+    "purple": {
+      "discord": "",
+      "discordId": "",
+      "rules": []
+    },
+    "yellow": {
+      "discord": "",
+      "discordId": "",
+      "rules": []
+    }
+  },
+
+  "elite4": {
+    "e4-1": {
+      "discord": "",
+      "discordId": "",
+      "deckName": "",
+      "decklistUrl": ""
+    },
+    "e4-2": {
+      "discord": "",
+      "discordId": "",
+      "deckName": "",
+      "decklistUrl": ""
+    },
+    "e4-3": {
+      "discord": "",
+      "discordId": "",
+      "deckName": "",
+      "decklistUrl": ""
+    },
+    "e4-4": {
+      "discord": "",
+      "discordId": "",
+      "deckName": "",
+      "decklistUrl": ""
+    }
+  }
+}
