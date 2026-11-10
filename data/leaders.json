@@ -12,7 +12,7 @@
     "red": {
       "name": "Tommy",
       "discordId": "251120134381502464",
-      "rules": []
+      "rules": ["Conquest - Play with 2 decks, you must win 1 game with each deck"]
     },
     "blue": {
       "name": "Jake",
@@ -27,7 +27,7 @@
     "black": {
       "name": "Mike",
       "discordId": "222167341029523468",
-      "rules": []
+      "rules": ["Pauper - Rare and under only, No promos, No LM (ST, BT, EX sets only)"]
     },
     "purple": {
       "name": "Nick L",
