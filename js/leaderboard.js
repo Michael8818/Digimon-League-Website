@@ -45,7 +45,8 @@ async function refresh() {
   refreshBtn.disabled = true;
   statusEl.textContent = "Loading…";
   try {
-    renderBoard(await loadLeagueData());
+    const [data] = await Promise.all([loadLeagueData(), loadLeaderDetails().catch(() => null)]);
+    renderBoard(data);
     statusEl.textContent = `Updated ${new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}.`;
   } catch (err) {
     statusEl.textContent = `${err.message} Check your connection and tap Refresh.`;

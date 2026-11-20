@@ -47,6 +47,7 @@ Tapping a gym badge or Elite Four member on the dashboard opens a pop-up with th
 
 | Field | Who | What it does |
 | --- | --- | --- |
+| `name` | everyone | The leader's name. For the Elite Four it replaces "Elite Four #1" etc. everywhere on the site (dashboard, leaderboard, leader page). Leave it `""` to show the placeholder. |
 | `discord` | everyone | Discord username (no `@`), used in the challenge message. Only shown on screen when there's no `discordId`, so Tamers know who to message. |
 | `discordId` | everyone | Numeric Discord user ID. With it, **Send challenge** copies the challenge message and opens the leader's Discord profile, where the Tamer taps **Message** and pastes. Without it, the button only copies the message. |
 | `rules` | gym leaders | Special rules: a list of lines, e.g. `["Best of 3", "No banned cards"]`. Use `[]` for none. |

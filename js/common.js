@@ -68,7 +68,19 @@ async function loadLeaderDetails() {
   const res = await fetch(`data/leaders.json?v=${Date.now()}`, { cache: "no-store" });
   if (!res.ok) throw new Error(`Couldn't load leader details (${res.status}).`);
   const data = await res.json();
-  return { gyms: data?.gyms || {}, elite4: data?.elite4 || {} };
+  const details = { gyms: data?.gyms || {}, elite4: data?.elite4 || {} };
+  applyLeaderNames(details);
+  return details;
+}
+
+// Elite Four members show their real name (from leaders.json) once it's filled in;
+// until then they keep the placeholder from config.js ("Elite Four #1").
+function applyLeaderNames(details) {
+  LEAGUE.elite4.forEach((m) => {
+    m.defaultName = m.defaultName || m.name;
+    const name = String(details.elite4[m.id]?.name || "").trim();
+    m.name = name || m.defaultName;
+  });
 }
 
 // Only allow real web links (blocks javascript: and other schemes).

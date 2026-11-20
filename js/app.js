@@ -254,7 +254,7 @@ function openLeader(leaderId) {
 
   // Challenge request
   const locked = !isGym && !check.ok && !check.already;
-  const message = `I would like to challenge you for the ${isGym ? leader.award : leader.name}. When are you available to play?`;
+  const message = `I would like to challenge you for the ${isGym ? leader.award : `Elite Four #${leader.order}`}. When are you available to play?`;
 
   let challenge;
   if (locked) {

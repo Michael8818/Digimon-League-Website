@@ -479,7 +479,8 @@ els.scanBtn.addEventListener("click", startScan);
 els.scanCancel.addEventListener("click", stopScan);
 
 // ---------- Start ----------
-function start() {
+async function start() {
+  await loadLeaderDetails().catch(() => null); // Elite Four names; placeholders if it fails
   fillRoleOptions(els.roleSelect, true);
   fillRoleOptions(els.leaderSelect, false);
 

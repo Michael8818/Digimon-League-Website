@@ -24,6 +24,7 @@ const LEAGUE = {
   // The Elite 4. With all gym badges, any member can be challenged except the last one,
   // which unlocks only after the others are beaten. Each crest gets grander by rank;
   // color sets its metal (bronze, silver, gold, diamond by default).
+  // name is a placeholder: each member's real name comes from data/leaders.json.
   elite4: [
     { id: "e4-1", name: "Elite Four #1", color: "#c0773a" },
     { id: "e4-2", name: "Elite Four #2", color: "#9eabbf" },
