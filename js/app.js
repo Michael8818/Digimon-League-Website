@@ -289,7 +289,7 @@ function openLeader(leaderId) {
       <div class="leader-art">${art}</div>
       <div>
         <p class="eyebrow">${escapeHtml(eyebrow)}</p>
-        <h2 id="leader-title" tabindex="-1">${escapeHtml(leader.name)}</h2>
+        <h2 id="leader-title" tabindex="-1">${escapeHtml(isGym ? gymLeaderName(leader) : leader.name)}</h2>
         ${chip}
       </div>
     </div>
