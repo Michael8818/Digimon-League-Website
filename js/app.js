@@ -223,7 +223,7 @@ function openLeader(leaderId) {
   if (isGym) {
     const gym = progress.gyms.find((g) => g.id === leaderId);
     art = gymBadgeSvg(gym, gym.earned);
-    eyebrow = `${gymLeaderName(gym)} · ${gym.badge}`;
+    eyebrow = gym.badge;
     chip = gym.earned
       ? `<span class="chip chip-defeated">Earned ${escapeHtml(formatDate(gym.date))}</span>`
       : "";
