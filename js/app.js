@@ -29,6 +29,11 @@ const els = {
 let leagueData = null;
 let leaderDetails = { gyms: {}, elite4: {} };
 
+// A gym leader's name from leaders.json, or their title from config.js ("Red Gym Leader") until it's filled in.
+function gymLeaderName(gym) {
+  return String(leaderDetails.gyms[gym.id]?.name || "").trim() || gym.leader;
+}
+
 function showNameForm() {
   els.cardView.hidden = true;
   els.nameView.hidden = false;
@@ -90,7 +95,7 @@ function render() {
       <button type="button" class="badge ${g.earned ? "earned" : "locked"}" data-leader="${g.id}" aria-haspopup="dialog">
         ${gymBadgeSvg(g, g.earned)}
         <span class="badge-name">${escapeHtml(g.badge)}</span>
-        <span class="badge-meta">${g.earned ? `Earned ${escapeHtml(formatDate(g.date))}` : `Beat ${escapeHtml(g.leader)}`}</span>
+        <span class="badge-meta">${g.earned ? `Earned ${escapeHtml(formatDate(g.date))}` : `Beat ${escapeHtml(gymLeaderName(g))}`}</span>
       </button>
     </li>`).join("");
 
@@ -218,7 +223,7 @@ function openLeader(leaderId) {
   if (isGym) {
     const gym = progress.gyms.find((g) => g.id === leaderId);
     art = gymBadgeSvg(gym, gym.earned);
-    eyebrow = `Gym Leader · ${gym.badge}`;
+    eyebrow = `${gymLeaderName(gym)} · ${gym.badge}`;
     chip = gym.earned
       ? `<span class="chip chip-defeated">Earned ${escapeHtml(formatDate(gym.date))}</span>`
       : "";
